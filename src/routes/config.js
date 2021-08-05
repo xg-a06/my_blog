@@ -1,46 +1,29 @@
 import { lazy } from 'react';
 
-const List = lazy(() => import('../pages/list/index'));
-const View = lazy(() => import('../pages/view/index'));
+const Layout = lazy(() => import('../pages/layout/index'));
+const Overview = lazy(() => import('../pages/overview/index'));
 
 const RouteConfig = [
   {
-    title: 'List',
+    title: 'Index',
     path: '/',
     key: 'index',
     exact: true,
-    redirect: '/list',
+    redirect: '/overview',
   },
   {
-    title: 'List',
-    path: '/list',
-    key: 'list',
-    component: List,
-    // redirect: '/list/studylist',
-    // auth: {
-    //   isAuth: true,
-    //   roles: [3],
-    // },
-    // routes: [
-    //   {
-    //     title: 'Studylist',
-    //     path: '/list/studylist',
-    //     key: 'studylist',
-    //     component: Studylist,
-    //   },
-    //   {
-    //     title: 'Favoriteslist',
-    //     path: '/list/favoriteslist',
-    //     key: 'favoriteslist',
-    //     component: Favoriteslist,
-    //   },
-    // ],
-  },
-  {
-    title: 'View',
-    path: '/view/:studyInstanceUID',
-    key: 'viewer',
-    component: View,
+    title: 'Layout',
+    path: '/',
+    key: 'layout',
+    component: Layout,
+    routes: [
+      {
+        title: 'Overview',
+        path: '/overview',
+        key: 'overview',
+        component: Overview,
+      },
+    ],
   },
 ];
 
