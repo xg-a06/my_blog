@@ -1,15 +1,23 @@
+/* eslint-disable consistent-return */
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
 import DataProvider, { createStore } from '@/redux';
-import { renderRoutes, RouteConfig } from './routes';
+import { useRoutes } from 'react-router-dom';
+import routes from './routes';
+import Auth from './auth';
 
 const Loading = <div>loading...</div>;
 const store = createStore(process.env.BUILD_ENV);
 
+const Router = () => {
+  const routing = useRoutes(routes());
+  return <>{routing}</>;
+};
+
 const App = () => (
   <DataProvider store={store}>
     <Suspense fallback={Loading}>
-      <Router>{renderRoutes(RouteConfig)}</Router>
+      <Auth />
+      <Router />
     </Suspense>
   </DataProvider>
 );

@@ -1,10 +1,10 @@
 import React from 'react';
-import { RouterView } from '../../routes';
+import { Outlet } from 'react-router-dom';
 
 const Index = () => (
   <div>
     <a href="/overview">overview</a>
-    <RouterView />
+    <Outlet />
   </div>
 );
 

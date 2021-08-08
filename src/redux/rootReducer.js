@@ -7,7 +7,7 @@ import app from './modules/app';
 const actions = {};
 const effects = {};
 const rootRef = { actions, effects };
-window.aaa = rootRef;
+
 eventBus.on('StoreCreated', (store) => {
   window.rootRef = rootRef;
   rootRef.dispatch = store.dispatch;
@@ -26,9 +26,6 @@ const collectionAndConvert = (rootRefParam, model) => {
       const actionType = `${key.toLocaleUpperCase()}/${name.toLocaleUpperCase()}`;
       ret.modelReducers[actionType] = fn;
       ret.modelActions[name] = (payload) => {
-        if (!rootRefParam.dispatch) {
-          window.asd = rootRefParam;
-        }
         rootRefParam.dispatch({ type: actionType, payload });
       };
       return ret;

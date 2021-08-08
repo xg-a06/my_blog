@@ -1,42 +1,31 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { createContext, useContext } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import React, { lazy } from 'react';
+import { Navigate } from 'react-router-dom';
 
-export RouteConfig from './config';
+const Login = lazy(() => import('../pages/login/index'));
+const Layout = lazy(() => import('../pages/layout/index'));
+const Overview = lazy(() => import('../pages/overview/index'));
 
-const RouteContext = createContext([]);
+const routes = (isLoggedIn = false) => [
+  {
+    path: '/',
+    element: isLoggedIn ? <Layout /> : <Navigate to="/login" />,
+    children: [
+      { path: '/', element: <Navigate to="/overview" /> },
+      { path: '/overview', element: <Overview /> },
+      // {
+      //   path: 'member',
+      //   element: <Outlet />,
+      //   children: [
+      //     { path: '/', element: <MemberGrid /> },
+      //     { path: '/add', element: <AddMember /> },
+      //   ],
+      // },
+    ],
+  },
+  {
+    path: '/login',
+    element: isLoggedIn ? <Navigate to="/" /> : <Login />,
+  },
+];
 
-const renderRoutes = (routes, switchProps = {}, extraProps = {}) => {
-  if (routes && routes.length > 0) {
-    return (
-      <Switch {...switchProps}>
-        {routes.map((route, i) => (
-          <Route
-            key={route.key || i}
-            path={route.path}
-            exact={route.exact}
-            strict={route.strict}
-            render={(props) => {
-              if (route.redirect) {
-                return <Redirect to={route.redirect} />;
-              }
-              return (
-                <RouteContext.Provider value={route.routes}>
-                  <route.component {...props} {...extraProps} route={route} />
-                </RouteContext.Provider>
-              );
-            }}
-          />
-        ))}
-      </Switch>
-    );
-  }
-  return null;
-};
-
-const RouterView = () => {
-  const routes = useContext(RouteContext);
-  return renderRoutes(routes);
-};
-
-export { renderRoutes, RouterView };
+export default routes;
