@@ -1,46 +1,46 @@
-const path = require('path')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const config = require('./config')
+const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const config = require('./config');
 
-function resolve (dir) {
-  return path.resolve(__dirname, '..', dir)
+function resolve(dir) {
+  return path.resolve(__dirname, '..', dir);
 }
 
-function subDir (dir) {
-  return path.posix.join(config[process.env.BUILD_ENV].SUB_DIR, dir)
+function subDir(dir) {
+  return path.posix.join(config[process.env.BUILD_ENV].SUB_DIR, dir);
 }
 
-function getCssLoaders () {
+function getCssLoaders() {
   const env = process.env.NODE_ENV;
   const build = process.env.BUILD_ENV;
-  let isLocal = build === 'local'
-  let isProd = env === 'production'
-  let sourceMap = !isProd
-  let lastLoader = isLocal ? 'style-loader' : MiniCssExtractPlugin.loader
-  let lastLoaderOptions = isLocal ? {} : { sourceMap }
-  const cssInclude = [/src/]
+  const isLocal = build === 'local';
+  const isProd = env === 'production';
+  const sourceMap = !isProd;
+  const lastLoader = isLocal ? 'style-loader' : MiniCssExtractPlugin.loader;
+  const lastLoaderOptions = isLocal ? {} : { sourceMap };
+  const cssInclude = [/src/];
   const loaders = [
     {
       test: /\.css$/,
       use: [
         { loader: lastLoader },
         {
-          loader: 'css-loader'
-        }
+          loader: 'css-loader',
+        },
       ],
-      include: resolve('node_modules')
+      include: resolve('node_modules'),
     },
     {
       test: /\.global\.css$/,
       use: [
         { loader: lastLoader },
         {
-          loader: 'css-loader'
+          loader: 'css-loader',
         },
         {
-          loader: 'postcss-loader'
-        }
-      ]
+          loader: 'postcss-loader',
+        },
+      ],
     },
     {
       test: /^(?!.*\.global).*\.css$/,
@@ -48,44 +48,44 @@ function getCssLoaders () {
         { loader: lastLoader, options: lastLoaderOptions },
         {
           loader: 'css-loader',
-          options: { modules: { localIdentName: '[hash:base64:6]' }, sourceMap, importLoaders: 1 }
+          options: { modules: { localIdentName: '[hash:base64:6]' }, sourceMap, importLoaders: 1 },
         },
-        { loader: 'postcss-loader', options: { sourceMap } }
+        { loader: 'postcss-loader', options: { sourceMap } },
       ],
-      include: cssInclude
-    }
-        , {
+      include: cssInclude,
+    },
+    {
       test: /\.global\.less$/,
       use: [
         { loader: lastLoader, options: lastLoaderOptions },
         {
           loader: 'css-loader',
-          options: { sourceMap, importLoaders: 2 }
+          options: { sourceMap, importLoaders: 2 },
         },
         { loader: 'postcss-loader', options: { sourceMap } },
-        { loader: 'less-loader', options: { sourceMap } }
+        { loader: 'less-loader', options: { sourceMap } },
       ],
-      include: resolve('src')
+      include: resolve('src'),
     },
-      {
-        test: /^(?!.*\.global).*\.less$/,
-        use: [
-          { loader: lastLoader, options: lastLoaderOptions },
-          {
-            loader: 'css-loader',
-            options: { modules: { localIdentName: '[hash:base64:6]' }, sourceMap, importLoaders: 2 }
-          },
-          { loader: 'postcss-loader', options: { sourceMap } },
-          { loader: 'less-loader', options: { sourceMap } }
-        ],
-        include: cssInclude
-      }
-        ]
-  return loaders
+    {
+      test: /^(?!.*\.global).*\.less$/,
+      use: [
+        { loader: lastLoader, options: lastLoaderOptions },
+        {
+          loader: 'css-loader',
+          options: { modules: { localIdentName: '[hash:base64:6]' }, sourceMap, importLoaders: 2 },
+        },
+        { loader: 'postcss-loader', options: { sourceMap } },
+        { loader: 'less-loader', options: { sourceMap } },
+      ],
+      include: cssInclude,
+    },
+  ];
+  return loaders;
 }
 
 module.exports = {
   resolve,
   subDir,
-  getCssLoaders
-}
+  getCssLoaders,
+};

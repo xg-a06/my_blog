@@ -1,31 +1,41 @@
-import React, { lazy } from 'react';
-import { Navigate } from 'react-router-dom';
+import React from 'react';
+import { useRoutes, BrowserRouter } from 'react-router-dom';
+import { connect, effects } from '@/redux';
+import routes from './config';
 
-const Login = lazy(() => import('../pages/login/index'));
-const Layout = lazy(() => import('../pages/layout/index'));
-const Overview = lazy(() => import('../pages/overview/index'));
+let cache = false;
+const Routes = (props) => {
+  const { checkLogin, auth } = props;
+  if (!cache) {
+    cache = true;
+    throw checkLogin();
+  }
+  const routing = useRoutes(routes(auth));
+  return <>{routing}</>;
+};
 
-const routes = (isLoggedIn = false) => [
-  {
-    path: '/',
-    element: isLoggedIn ? <Layout /> : <Navigate to="/login" />,
-    children: [
-      { path: '/', element: <Navigate to="/overview" /> },
-      { path: '/overview', element: <Overview /> },
-      // {
-      //   path: 'member',
-      //   element: <Outlet />,
-      //   children: [
-      //     { path: '/', element: <MemberGrid /> },
-      //     { path: '/add', element: <AddMember /> },
-      //   ],
-      // },
-    ],
-  },
-  {
-    path: '/login',
-    element: isLoggedIn ? <Navigate to="/" /> : <Login />,
-  },
-];
+const stateFn = (state) => {
+  const { auth } = state;
+  return {
+    auth,
+  };
+};
 
-export default routes;
+const actionFn = () => {
+  const {
+    auth: { checkLogin },
+  } = effects;
+  return {
+    checkLogin,
+  };
+};
+
+const RoutesContainer = connect(stateFn, actionFn)(Routes);
+
+const Router = () => (
+  <BrowserRouter>
+    <RoutesContainer />
+  </BrowserRouter>
+);
+
+export default Router;

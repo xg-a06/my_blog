@@ -3,6 +3,7 @@ import produce from 'immer';
 import { pipeline } from '../utils/tools';
 import eventBus from '../utils/eventEmitter';
 import app from './modules/app';
+import auth from './modules/auth';
 
 const actions = {};
 const effects = {};
@@ -16,6 +17,7 @@ eventBus.on('StoreCreated', (store) => {
 
 const models = {
   app,
+  auth,
 };
 
 const collectionAndConvert = (rootRefParam, model) => {
